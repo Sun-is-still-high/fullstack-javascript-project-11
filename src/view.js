@@ -1,4 +1,4 @@
-const renderForm = (state, elements) => {
+const renderForm = (state, elements, i18n) => {
   const { input, feedback } = elements;
 
   switch (state.form.status) {
@@ -6,14 +6,14 @@ const renderForm = (state, elements) => {
       input.classList.add('is-invalid');
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
-      feedback.textContent = state.form.error;
+      feedback.textContent = i18n.t(`errors.${state.form.error}`);
       break;
 
     case 'valid':
       input.classList.remove('is-invalid');
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
-      feedback.textContent = 'RSS успешно загружен';
+      feedback.textContent = i18n.t('success');
       input.value = '';
       input.focus();
       break;
@@ -23,11 +23,11 @@ const renderForm = (state, elements) => {
   }
 };
 
-const render = (state, elements) => (path) => {
+const render = (state, elements, i18n) => (path) => {
   switch (path) {
     case 'form.status':
     case 'form.error':
-      renderForm(state, elements);
+      renderForm(state, elements, i18n);
       break;
 
     default:
