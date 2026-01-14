@@ -8,7 +8,7 @@
 
 ## Demo
 
-[Ссылка на приложение](https://your-app.vercel.app)
+[Ссылка на приложение](https://fullstack-javascript-project-11-dun.vercel.app/)
 
 ## Установка
 
