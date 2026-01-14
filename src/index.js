@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
-import { uniqueId } from 'lodash';
+import { uniqueId, differenceBy } from 'lodash';
 import render from './view.js';
 import parse from './parser.js';
 import ru from './locales/ru.js';
@@ -37,6 +37,26 @@ const validateUrl = (url, urls) => {
 const loadRss = (url) => axios.get(getProxyUrl(url))
   .then((response) => parse(response.data.contents));
 
+const UPDATE_INTERVAL = 5000;
+
+const updateFeeds = (watchedState) => {
+  const promises = watchedState.feeds.map((feed) => loadRss(feed.url)
+    .then((data) => {
+      const newPosts = differenceBy(data.posts, watchedState.posts, 'link')
+        .map((post) => ({ ...post, id: uniqueId(), feedId: feed.id }));
+
+      if (newPosts.length > 0) {
+        watchedState.posts = [...newPosts, ...watchedState.posts];
+      }
+    })
+    .catch(() => {}));
+
+  Promise.all(promises)
+    .finally(() => {
+      setTimeout(() => updateFeeds(watchedState), UPDATE_INTERVAL);
+    });
+};
+
 const app = () => {
   const state = {
     form: {
@@ -65,6 +85,8 @@ const app = () => {
     },
   }).then(() => {
     const watchedState = onChange(state, render(state, elements, i18next));
+
+    updateFeeds(watchedState);
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
