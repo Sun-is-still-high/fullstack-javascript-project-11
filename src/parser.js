@@ -1,4 +1,4 @@
-const parse = data => {
+const parse = (data) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(data, 'text/xml')
 
@@ -14,7 +14,7 @@ const parse = data => {
   const description = channel.querySelector('description').textContent
 
   const items = channel.querySelectorAll('item')
-  const posts = Array.from(items).map(item => ({
+  const posts = Array.from(items).map((item) => ({
     title: item.querySelector('title').textContent,
     link: item.querySelector('link').textContent,
     description: item.querySelector('description').textContent,

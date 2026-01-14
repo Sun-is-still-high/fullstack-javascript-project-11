@@ -18,8 +18,8 @@ export default [
       'no-unused-vars': 'warn',
       'no-console': 'off',
       '@stylistic/semi': ['error', 'never'],
-      '@stylistic/arrow-parens': ['error', 'as-needed'],
-      '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: false }],
+      '@stylistic/arrow-parens': ['error', 'always'],
+      '@stylistic/brace-style': ['error', 'stroustrup'],
     },
   },
   {

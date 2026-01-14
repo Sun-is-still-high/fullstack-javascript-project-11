@@ -48,7 +48,7 @@ const renderFeeds = (state, elements, i18n) => {
   const listGroup = document.createElement('ul')
   listGroup.classList.add('list-group', 'border-0', 'rounded-0')
 
-  state.feeds.forEach(feed => {
+  state.feeds.forEach((feed) => {
     const li = document.createElement('li')
     li.classList.add('list-group-item', 'border-0', 'border-end-0')
 
@@ -89,7 +89,7 @@ const renderPosts = (state, elements, i18n) => {
   const listGroup = document.createElement('ul')
   listGroup.classList.add('list-group', 'border-0', 'rounded-0')
 
-  state.posts.forEach(post => {
+  state.posts.forEach((post) => {
     const li = document.createElement('li')
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
 
@@ -123,7 +123,7 @@ const renderPosts = (state, elements, i18n) => {
 
 const renderModal = (state, elements) => {
   const { modalTitle, modalBody, modalLink } = elements
-  const post = state.posts.find(p => p.id === state.ui.modalPostId)
+  const post = state.posts.find((p) => p.id === state.ui.modalPostId)
 
   if (post) {
     modalTitle.textContent = post.title
@@ -132,7 +132,7 @@ const renderModal = (state, elements) => {
   }
 }
 
-const render = (state, elements, i18n) => path => {
+const render = (state, elements, i18n) => (path) => {
   switch (path) {
     case 'form.status':
     case 'form.error':
