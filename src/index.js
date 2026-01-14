@@ -8,16 +8,8 @@ import { uniqueId, differenceBy } from 'lodash';
 import render from './view.js';
 import parse from './parser.js';
 import ru from './locales/ru.js';
-
-yup.setLocale({
-  mixed: {
-    notOneOf: 'notOneOf',
-    required: 'required',
-  },
-  string: {
-    url: 'url',
-  },
-});
+import en from './locales/en.js';
+import bg from './locales/bg.js';
 
 const getProxyUrl = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
@@ -59,6 +51,16 @@ const updateFeeds = (watchedState) => {
 };
 
 const app = () => {
+  yup.setLocale({
+    mixed: {
+      notOneOf: 'notOneOf',
+      required: 'required',
+    },
+    string: {
+      url: 'url',
+    },
+  });
+
   const state = {
     form: {
       status: 'filling',
@@ -91,6 +93,8 @@ const app = () => {
     debug: false,
     resources: {
       ru,
+      en,
+      bg,
     },
   }).then(() => {
     elements.modalLink.textContent = i18next.t('readMore');
