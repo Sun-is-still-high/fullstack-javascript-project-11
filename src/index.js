@@ -11,7 +11,7 @@ import ru from './locales/ru.js'
 import en from './locales/en.js'
 import bg from './locales/bg.js'
 
-const getProxyUrl = (url) => {
+const getProxyUrl = url => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app')
   proxyUrl.searchParams.set('disableCache', 'true')
   proxyUrl.searchParams.set('url', url)
@@ -27,16 +27,16 @@ const validateUrl = (url, urls) => {
   return schema.validate(url)
 }
 
-const loadRss = (url) => axios.get(getProxyUrl(url))
-  .then((response) => parse(response.data.contents))
+const loadRss = url => axios.get(getProxyUrl(url))
+  .then(response => parse(response.data.contents))
 
 const UPDATE_INTERVAL = 5000
 
-const updateFeeds = (watchedState) => {
-  const promises = watchedState.feeds.map((feed) => loadRss(feed.url)
-    .then((data) => {
+const updateFeeds = watchedState => {
+  const promises = watchedState.feeds.map(feed => loadRss(feed.url)
+    .then(data => {
       const newPosts = differenceBy(data.posts, watchedState.posts, 'link')
-        .map((post) => ({ ...post, id: uniqueId(), feedId: feed.id }))
+        .map(post => ({ ...post, id: uniqueId(), feedId: feed.id }))
 
       if (newPosts.length > 0) {
         watchedState.posts = [...newPosts, ...watchedState.posts]
@@ -104,7 +104,7 @@ const app = () => {
 
     updateFeeds(watchedState)
 
-    elements.postsContainer.addEventListener('click', (e) => {
+    elements.postsContainer.addEventListener('click', e => {
       const { id } = e.target.dataset
       if (!id) return
 
@@ -112,7 +112,7 @@ const app = () => {
       watchedState.ui.modalPostId = id
     })
 
-    elements.form.addEventListener('submit', (e) => {
+    elements.form.addEventListener('submit', e => {
       e.preventDefault()
       const formData = new FormData(e.target)
       const url = formData.get('url').trim()
@@ -122,10 +122,10 @@ const app = () => {
           watchedState.form.status = 'sending'
           return loadRss(url)
         })
-        .then((data) => {
+        .then(data => {
           const feedId = uniqueId()
           const feed = { ...data.feed, id: feedId, url }
-          const posts = data.posts.map((post) => ({ ...post, id: uniqueId(), feedId }))
+          const posts = data.posts.map(post => ({ ...post, id: uniqueId(), feedId }))
 
           watchedState.urls.push(url)
           watchedState.feeds.push(feed)
@@ -133,14 +133,14 @@ const app = () => {
           watchedState.form.error = null
           watchedState.form.status = 'valid'
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.isParsingError) {
             watchedState.form.error = 'parsingError'
           }
- else if (err.isAxiosError) {
+          else if (err.isAxiosError) {
             watchedState.form.error = 'networkError'
           }
- else {
+          else {
             watchedState.form.error = err.message
           }
           watchedState.form.status = 'invalid'

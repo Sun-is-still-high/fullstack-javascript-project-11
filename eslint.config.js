@@ -18,8 +18,9 @@ export default [
       'no-unused-vars': 'warn',
       'no-console': 'off',
       '@stylistic/semi': ['error', 'never'],
-      '@stylistic/arrow-parens': ['error', 'always'],
+      '@stylistic/arrow-parens': ['error', 'as-needed'],
       '@stylistic/brace-style': ['error', 'stroustrup'],
+      '@stylistic/indent': ['error', 2],
     },
   },
   {
