@@ -95,18 +95,41 @@ const renderPosts = (state, elements, i18n) => {
 
     const a = document.createElement('a');
     a.setAttribute('href', post.link);
-    a.classList.add('fw-bold');
+    a.dataset.id = post.id;
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.textContent = post.title;
 
+    const isRead = state.ui.readPosts.has(post.id);
+    a.classList.add(isRead ? 'fw-normal' : 'fw-bold');
+
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    button.dataset.id = post.id;
+    button.dataset.bsToggle = 'modal';
+    button.dataset.bsTarget = '#modal';
+    button.textContent = i18n.t('preview');
+
     li.appendChild(a);
+    li.appendChild(button);
     listGroup.appendChild(li);
   });
 
   card.appendChild(listGroup);
   postsContainer.innerHTML = '';
   postsContainer.appendChild(card);
+};
+
+const renderModal = (state, elements) => {
+  const { modalTitle, modalBody, modalLink } = elements;
+  const post = state.posts.find((p) => p.id === state.ui.modalPostId);
+
+  if (post) {
+    modalTitle.textContent = post.title;
+    modalBody.textContent = post.description;
+    modalLink.setAttribute('href', post.link);
+  }
 };
 
 const render = (state, elements, i18n) => (path) => {
@@ -121,7 +144,12 @@ const render = (state, elements, i18n) => (path) => {
       break;
 
     case 'posts':
+    case 'ui.readPosts':
       renderPosts(state, elements, i18n);
+      break;
+
+    case 'ui.modalPostId':
+      renderModal(state, elements);
       break;
 
     default:

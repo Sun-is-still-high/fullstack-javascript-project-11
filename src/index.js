@@ -1,3 +1,4 @@
+import 'bootstrap';
 import './styles.scss';
 import * as yup from 'yup';
 import onChange from 'on-change';
@@ -66,6 +67,10 @@ const app = () => {
     feeds: [],
     posts: [],
     urls: [],
+    ui: {
+      readPosts: new Set(),
+      modalPostId: null,
+    },
   };
 
   const elements = {
@@ -75,6 +80,10 @@ const app = () => {
     submitButton: document.querySelector('button[type="submit"]'),
     feedsContainer: document.querySelector('.feeds'),
     postsContainer: document.querySelector('.posts'),
+    modalTitle: document.querySelector('#modal .modal-title'),
+    modalBody: document.querySelector('#modal .modal-body'),
+    modalLink: document.querySelector('#modal .full-article'),
+    modalClose: document.querySelector('#modal .btn-secondary'),
   };
 
   i18next.init({
@@ -84,9 +93,20 @@ const app = () => {
       ru,
     },
   }).then(() => {
+    elements.modalLink.textContent = i18next.t('readMore');
+    elements.modalClose.textContent = i18next.t('close');
+
     const watchedState = onChange(state, render(state, elements, i18next));
 
     updateFeeds(watchedState);
+
+    elements.postsContainer.addEventListener('click', (e) => {
+      const { id } = e.target.dataset;
+      if (!id) return;
+
+      watchedState.ui.readPosts.add(id);
+      watchedState.ui.modalPostId = id;
+    });
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();

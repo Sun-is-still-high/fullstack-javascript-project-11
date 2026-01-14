@@ -10,5 +10,8 @@ export default {
     success: 'RSS успешно загружен',
     feeds: 'Фиды',
     posts: 'Посты',
+    preview: 'Просмотр',
+    readMore: 'Читать полностью',
+    close: 'Закрыть',
   },
 };
