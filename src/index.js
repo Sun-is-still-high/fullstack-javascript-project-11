@@ -11,7 +11,7 @@ import ru from './locales/ru.js'
 import en from './locales/en.js'
 import bg from './locales/bg.js'
 
-const getProxyUrl = url => {
+const getProxyUrl = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app')
   proxyUrl.searchParams.set('disableCache', 'true')
   proxyUrl.searchParams.set('url', url)
@@ -32,9 +32,9 @@ const loadRss = url => axios.get(getProxyUrl(url))
 
 const UPDATE_INTERVAL = 5000
 
-const updateFeeds = watchedState => {
+const updateFeeds = (watchedState) => {
   const promises = watchedState.feeds.map(feed => loadRss(feed.url)
-    .then(data => {
+    .then((data) => {
       const newPosts = differenceBy(data.posts, watchedState.posts, 'link')
         .map(post => ({ ...post, id: uniqueId(), feedId: feed.id }))
 
@@ -104,7 +104,7 @@ const app = () => {
 
     updateFeeds(watchedState)
 
-    elements.postsContainer.addEventListener('click', e => {
+    elements.postsContainer.addEventListener('click', (e) => {
       const { id } = e.target.dataset
       if (!id) return
 
@@ -112,7 +112,7 @@ const app = () => {
       watchedState.ui.modalPostId = id
     })
 
-    elements.form.addEventListener('submit', e => {
+    elements.form.addEventListener('submit', (e) => {
       e.preventDefault()
       const formData = new FormData(e.target)
       const url = formData.get('url').trim()
@@ -122,7 +122,7 @@ const app = () => {
           watchedState.form.status = 'sending'
           return loadRss(url)
         })
-        .then(data => {
+        .then((data) => {
           const feedId = uniqueId()
           const feed = { ...data.feed, id: feedId, url }
           const posts = data.posts.map(post => ({ ...post, id: uniqueId(), feedId }))
@@ -133,7 +133,7 @@ const app = () => {
           watchedState.form.error = null
           watchedState.form.status = 'valid'
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.isParsingError) {
             watchedState.form.error = 'parsingError'
           }

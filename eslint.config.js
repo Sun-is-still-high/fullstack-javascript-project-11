@@ -18,7 +18,7 @@ export default [
       'no-unused-vars': 'warn',
       'no-console': 'off',
       '@stylistic/semi': ['error', 'never'],
-      '@stylistic/arrow-parens': ['error', 'as-needed'],
+      '@stylistic/arrow-parens': ['error', 'as-needed', { requireForBlockBody: true }],
       '@stylistic/brace-style': ['error', 'stroustrup'],
       '@stylistic/indent': ['error', 2],
     },
