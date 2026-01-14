@@ -14,4 +14,4 @@ export default {
     readMore: 'Читать полностью',
     close: 'Закрыть',
   },
-};
+}

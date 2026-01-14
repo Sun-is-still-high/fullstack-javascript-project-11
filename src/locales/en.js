@@ -14,4 +14,4 @@ export default {
     readMore: 'Read more',
     close: 'Close',
   },
-};
+}
