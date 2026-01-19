@@ -7,6 +7,7 @@ import axios from 'axios'
 import { uniqueId, differenceBy } from 'lodash'
 import render from './view.js'
 import parse from './parser.js'
+import { ru, en, bg } from './locales/index.js'
 
 const getProxyUrl = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app')
@@ -63,7 +64,11 @@ const app = () => {
 
   const state = {
     form: {
-      status: 'filling',
+      valid: true,
+      error: null,
+    },
+    loadingProcess: {
+      status: 'idle',
       error: null,
     },
     feeds: [],
@@ -119,7 +124,9 @@ const app = () => {
       const addedUrls = state.feeds.map(feed => feed.url)
       validateUrl(url, addedUrls)
         .then(() => {
-          watchedState.form.status = 'sending'
+          watchedState.form.valid = true
+          watchedState.form.error = null
+          watchedState.loadingProcess.status = 'loading'
           return loadRss(url)
         })
         .then((data) => {
@@ -129,10 +136,10 @@ const app = () => {
 
           watchedState.feeds.push(feed)
           watchedState.posts = [...posts, ...state.posts]
-          watchedState.form.error = null
-          watchedState.form.status = 'valid'
+          watchedState.loadingProcess.status = 'success'
         })
         .catch((err) => {
+          watchedState.loadingProcess.status = 'failed'
           if (err.isParsingError) {
             watchedState.form.error = 'parsingError'
           }
@@ -142,7 +149,7 @@ const app = () => {
           else {
             watchedState.form.error = err.message
           }
-          watchedState.form.status = 'invalid'
+          watchedState.form.valid = false
         })
     })
   })

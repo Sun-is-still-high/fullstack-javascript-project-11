@@ -1,30 +1,40 @@
-const renderForm = (state, elements, i18n) => {
+const renderFormValidation = (state, elements, i18n) => {
+  const { input, feedback } = elements
+
+  if (!state.form.valid) {
+    input.classList.add('is-invalid')
+    feedback.classList.remove('text-success')
+    feedback.classList.add('text-danger')
+    feedback.textContent = i18n.t(`errors.${state.form.error}`)
+  }
+  else {
+    input.classList.remove('is-invalid')
+    feedback.classList.remove('text-danger')
+  }
+}
+
+const renderLoadingProcess = (state, elements, i18n) => {
   const { input, feedback, submitButton } = elements
 
-  switch (state.form.status) {
-    case 'sending':
+  switch (state.loadingProcess.status) {
+    case 'loading':
       submitButton.disabled = true
       break
 
-    case 'invalid':
+    case 'success':
       submitButton.disabled = false
-      input.classList.add('is-invalid')
-      feedback.classList.remove('text-success')
-      feedback.classList.add('text-danger')
-      feedback.textContent = i18n.t(`errors.${state.form.error}`)
-      break
-
-    case 'valid':
-      submitButton.disabled = false
-      input.classList.remove('is-invalid')
-      feedback.classList.remove('text-danger')
       feedback.classList.add('text-success')
       feedback.textContent = i18n.t('success')
       input.value = ''
       input.focus()
       break
 
+    case 'failed':
+      submitButton.disabled = false
+      break
+
     default:
+      submitButton.disabled = false
       break
   }
 }
@@ -134,9 +144,13 @@ const renderModal = (state, elements) => {
 
 const render = (state, elements, i18n) => (path) => {
   switch (path) {
-    case 'form.status':
+    case 'form.valid':
     case 'form.error':
-      renderForm(state, elements, i18n)
+      renderFormValidation(state, elements, i18n)
+      break
+
+    case 'loadingProcess.status':
+      renderLoadingProcess(state, elements, i18n)
       break
 
     case 'feeds':
