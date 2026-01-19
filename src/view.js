@@ -158,6 +158,9 @@ const render = (state, elements, i18n) => (path) => {
       break
 
     case 'posts':
+      renderPosts(state, elements, i18n)
+      break
+
     case 'ui.readPosts':
       renderPosts(state, elements, i18n)
       break
