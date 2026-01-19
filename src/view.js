@@ -145,7 +145,9 @@ const renderModal = (state, elements) => {
 const render = (state, elements, i18n) => (path) => {
   switch (path) {
     case 'form.valid':
-    case 'form.error':
+      renderFormValidation(state, elements, i18n)
+      break
+      case 'form.error':
       renderFormValidation(state, elements, i18n)
       break
 
