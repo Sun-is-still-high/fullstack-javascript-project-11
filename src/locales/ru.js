@@ -6,6 +6,7 @@ export default {
       url: 'Ссылка должна быть валидным URL',
       networkError: 'Ошибка сети',
       parsingError: 'Ресурс не содержит валидный RSS',
+      updateError: 'Ошибка обновления фида',
     },
     success: 'RSS успешно загружен',
     feeds: 'Фиды',

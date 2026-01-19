@@ -7,9 +7,6 @@ import axios from 'axios'
 import { uniqueId, differenceBy } from 'lodash'
 import render from './view.js'
 import parse from './parser.js'
-import ru from './locales/ru.js'
-import en from './locales/en.js'
-import bg from './locales/bg.js'
 
 const getProxyUrl = (url) => {
   const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app')
@@ -32,7 +29,7 @@ const loadRss = url => axios.get(getProxyUrl(url))
 
 const UPDATE_INTERVAL = 5000
 
-const updateFeeds = (watchedState) => {
+const updateFeeds = (watchedState, i18n) => {
   const promises = watchedState.feeds.map(feed => loadRss(feed.url)
     .then((data) => {
       const newPosts = differenceBy(data.posts, watchedState.posts, 'link')
@@ -42,11 +39,14 @@ const updateFeeds = (watchedState) => {
         watchedState.posts = [...newPosts, ...watchedState.posts]
       }
     })
-    .catch(() => {}))
+    .catch((error) => {
+      console.error(`Failed to update feed ${feed.url}:`, error)
+      alert(`${i18n.t('errors.updateError')}: ${feed.url}`)
+    }))
 
   Promise.all(promises)
     .finally(() => {
-      setTimeout(() => updateFeeds(watchedState), UPDATE_INTERVAL)
+      setTimeout(() => updateFeeds(watchedState, i18n), UPDATE_INTERVAL)
     })
 }
 
@@ -68,7 +68,6 @@ const app = () => {
     },
     feeds: [],
     posts: [],
-    urls: [],
     ui: {
       readPosts: new Set(),
       modalPostId: null,
@@ -102,7 +101,7 @@ const app = () => {
 
     const watchedState = onChange(state, render(state, elements, i18next))
 
-    updateFeeds(watchedState)
+    updateFeeds(watchedState, i18next)
 
     elements.postsContainer.addEventListener('click', (e) => {
       const { id } = e.target.dataset
@@ -117,7 +116,8 @@ const app = () => {
       const formData = new FormData(e.target)
       const url = formData.get('url').trim()
 
-      validateUrl(url, state.urls)
+      const addedUrls = state.feeds.map(feed => feed.url)
+      validateUrl(url, addedUrls)
         .then(() => {
           watchedState.form.status = 'sending'
           return loadRss(url)
@@ -127,7 +127,6 @@ const app = () => {
           const feed = { ...data.feed, id: feedId, url }
           const posts = data.posts.map(post => ({ ...post, id: uniqueId(), feedId }))
 
-          watchedState.urls.push(url)
           watchedState.feeds.push(feed)
           watchedState.posts = [...posts, ...state.posts]
           watchedState.form.error = null

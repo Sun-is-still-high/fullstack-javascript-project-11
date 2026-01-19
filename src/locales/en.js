@@ -6,6 +6,7 @@ export default {
       url: 'Link must be a valid URL',
       networkError: 'Network error',
       parsingError: 'Resource does not contain valid RSS',
+      updateError: 'Feed update error',
     },
     success: 'RSS loaded successfully',
     feeds: 'Feeds',
